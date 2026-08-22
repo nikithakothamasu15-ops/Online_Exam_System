@@ -16,7 +16,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // Local React app
-      "https://your-vercel-app.vercel.app", // Replace after Vercel deployment
+      "online-exam-system-hazel.vercel.app", // Replace after Vercel deployment
     ],
     credentials: true,
   })
