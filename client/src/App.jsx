@@ -6,6 +6,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ExaminerDashboard from "./pages/ExaminerDashboard";
 import StudentDashboard from "./pages/StudentDashboard";
 import TakeExam from "./pages/TakeExam";
+import Result from "./pages/Result";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/examiner" element={<ExaminerDashboard />} />
         <Route path="/student" element={<StudentDashboard />} />
         <Route path="/exam" element={<TakeExam />} />
+        <Route path="/result" element={<Result />} />
       </Routes>
     </BrowserRouter>
   );

@@ -96,13 +96,14 @@ function TakeExam() {
 
       setSubmitted(true);
 
-      alert(
-        `${auto ? "Time is up!\n\n" : ""}Exam Submitted!\n\nScore: ${
-          res.data.score
-        }/${res.data.total}\nPercentage: ${res.data.percentage}%`
-      );
-
-      navigate("/student");
+      navigate("/result", {
+        state: {
+          title: state.title,
+          score: res.data.score,
+          total: res.data.total,
+          percentage: res.data.percentage,
+        },
+      });
     } catch (err) {
       submittingRef.current = false; // Allow retry only if it actually failed
       alert(err.response?.data?.message || "Submission Failed");

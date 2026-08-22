@@ -18,6 +18,8 @@ function ExaminerDashboard() {
 
   const [questionCount, setQuestionCount] = useState(0);
   const [questions, setQuestions] = useState([]);
+  const [showLogout, setShowLogout] = useState(false);
+  const [logoutHover, setLogoutHover] = useState(false);
 
   useEffect(() => {
     axios.get("/exams").then((res) => {
@@ -28,20 +30,19 @@ function ExaminerDashboard() {
   const fetchQuestionCount = async (id) => {
     if (!id) return;
 
-    const res = await axios.get(`/exams/${id}/count`);
+  const res = await axios.get(`/exams/${id}/count`);
     setQuestionCount(res.data.count);
-    };
+  };
   
-    const fetchQuestions = async (id) => {
-      if (!id) return;
+  const fetchQuestions = async (id) => {
+    if (!id) return;
 
-      const res = await axios.get(`/exams/${id}/all-questions`);
-      setQuestions(res.data);
-    };
+    const res = await axios.get(`/exams/${id}/all-questions`);
+    setQuestions(res.data);
+  };
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm({ ...form,
       [e.target.name]: e.target.value,
     });
   };
@@ -78,116 +79,96 @@ function ExaminerDashboard() {
 
   const navigate = useNavigate();
 
-    const logout = () => {
+  const logout = () => {
     localStorage.clear();
     navigate("/");
-    };
+  };
 
   return (
     <div style={{ padding: "20px" }}>
-      <div
-      style={{
-        background: "white",
-        padding: "18px 24px",
-        borderRadius: "12px",
+      <div style={{
+        background: "linear-gradient(135deg, #2563EB, #0F766E)",
+        color: "white",
+        padding: "24px 28px",
+        borderRadius: "16px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: "25px",
-        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-        border: "1px solid #e5e7eb",
-      }}
-    >
+        marginBottom: "30px",
+        boxShadow: "0 8px 25px rgba(37,99,235,0.18)",
+      }} >
       <div>
-        <h1
-          style={{
+        <h1 style={{
             margin: 0,
-            color: "#1f2937",
-            fontSize: "28px",
-          }}
-        >
-          Examiner Dashboard
-        </h1>
+            fontSize: "38px",
+            fontWeight: "700",
+            lineHeight: "1.1",
+            letterSpacing: "-0.5px",
+            color: "white",
+          }} > Examiner Dashboard </h1>
 
-        <p
-          style={{
-            margin: "5px 0 0",
-            color: "#6b7280",
-            fontSize: "14px",
-          }}
-        >
-          Create and manage MCQ questions
-        </p>
+        <p style={{
+            marginTop: "10px",
+            marginBottom: 0,
+            fontSize: "17px",
+            color: "#E0F2FE",
+          }} > Create and manage MCQ questions </p>
       </div>
 
-      <button
-        onClick={logout}
+      <button onClick={() => setShowLogout(true)}
+        onMouseEnter={() => setLogoutHover(true)}
+        onMouseLeave={() => setLogoutHover(false)}
         style={{
           padding: "10px 18px",
-          background: "white",
+          background: logoutHover ? "#F3F4F6" : "white",
           color: "#374151",
           border: "1px solid #d1d5db",
           borderRadius: "8px",
           cursor: "pointer",
           fontSize: "14px",
           fontWeight: "500",
-        }}
-      >
-        Logout
-      </button>
+          transition: "all 0.2s ease",
+          transform: logoutHover ? "translateY(-1px)" : "translateY(0)",
+          boxShadow: logoutHover ? "0 4px 12px rgba(0,0,0,0.12)" : "none",
+        }} > Logout </button>
     </div>
 
     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-          <select
-            value={examId}
+          <select value={examId}
             onChange={(e) => {
               setExamId(e.target.value);
               fetchQuestionCount(e.target.value);
               fetchQuestions(e.target.value);
             }}
-            style={{ padding: "8px" }}
-          >
+            style={{ padding: "8px" }} >
             <option value="">Select Exam</option>
 
-            {exams.map((exam) => (
-              <option key={exam.id} value={exam.id}>
-                {exam.title}
-              </option>
-            ))}
+            {exams.map((exam) => ( <option key={exam.id} value={exam.id}> {exam.title} </option> ))}
           </select>
 
           <h2>Questions Added: {questionCount}/10</h2>
           {message && (
-            <p
-              style={{
+            <p style={{
                 marginTop: "10px",
                 fontWeight: "bold",
                 color: message.includes("successfully") ? "green" : "rgb(193, 19, 19)",
-              }}
-            >
-              {message}
-            </p>
-          )}
+              }} > {message} </p> )}
         </div>
 
-        <div
-          style={{
+        <div style={{
             display: "grid",
             gridTemplateColumns: "1.2fr 1fr",
             gap: "30px",
             alignItems: "start",
-          }}
-        >
+          }} >
           {/* LEFT SIDE - FORM */}
           <div>
-            <form
-              onSubmit={saveQuestion}
+            <form onSubmit={saveQuestion}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: "12px",
-              }}
-            >
+              }} >
               <label>Question</label>
               <textarea
                 name="question"
@@ -196,8 +177,7 @@ function ExaminerDashboard() {
                 onChange={handleChange}
                 rows="4"
                 required
-                style={{ padding: "10px", resize: "vertical" }}
-              />
+                style={{ padding: "10px", resize: "vertical" }} />
 
               <label>Option 1</label>
               <input name="option1" value={form.option1} onChange={handleChange} placeholder="Enter Option 1" required style={{ padding: "10px" }} />
@@ -212,20 +192,17 @@ function ExaminerDashboard() {
               <input name="option4" value={form.option4} onChange={handleChange} placeholder="Enter Option 4" required style={{ padding: "10px" }} />
 
               <label>Correct Answer</label>
-              <select
-                name="correct_option"
+              <select name="correct_option"
                 value={form.correct_option}
                 onChange={handleChange}
-                style={{ padding: "10px" }}
-              >
+                style={{ padding: "10px" }} >
                 <option value={1}>Option 1</option>
                 <option value={2}>Option 2</option>
                 <option value={3}>Option 3</option>
                 <option value={4}>Option 4</option>
               </select>
 
-              <button
-                type="submit"
+              <button type="submit"
                 style={{
                   padding: "12px",
                   background: "#2563eb",
@@ -233,10 +210,8 @@ function ExaminerDashboard() {
                   border: "none",
                   borderRadius: "6px",
                   cursor: "pointer",
-                }}
-              >
-                Add Question
-              </button>
+                }} >
+                Add Question </button>
             </form>
           </div>
 
@@ -259,8 +234,7 @@ function ExaminerDashboard() {
                     wordWrap: "break-word",
                     overflowWrap: "break-word",
                     whiteSpace: "pre-wrap",
-                  }}
-                >
+                  }} >
                   <h3>{index + 1}. {q.question}</h3>
 
                   <p><strong>1.</strong> {q.option1}</p>
@@ -269,13 +243,66 @@ function ExaminerDashboard() {
                   <p><strong>4.</strong> {q.option4}</p>
 
                   <p style={{ color: "green", fontWeight: "bold" }}>
-                    Correct: Option {q.correct_option}
-                  </p>
+                    Correct: Option {q.correct_option} </p>
                 </div>
               ))
             )}
           </div>
         </div>
+        {showLogout && (
+          <div style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "rgba(0,0,0,0.4)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }} >
+            <div
+              style={{
+                background: "white",
+                padding: "25px",
+                borderRadius: "12px",
+                width: "320px",
+                textAlign: "center",
+                boxShadow: "0 8px 25px rgba(0,0,0,0.2)",
+              }} >
+              <h3 style={{ marginTop: 0 }}>Confirm Logout</h3>
+              <p>Are you sure you want to logout?</p>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "12px",
+                  marginTop: "20px",
+                }} >
+                <button onClick={() => setShowLogout(false)}
+                  style={{
+                    padding: "10px 18px",
+                    border: "1px solid #d1d5db",
+                    background: "white",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }} > Cancel </button>
+
+                <button onClick={logout}
+                  style={{
+                    padding: "10px 18px",
+                    border: "none",
+                    background: "#2563EB",
+                    color: "white",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                  }} > Logout </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
   );
 }
